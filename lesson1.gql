@@ -1,0 +1,16 @@
+type User{
+  id:ID!
+  name:String!
+  age:Int!
+  height:Float!
+  isMarraid:Boolean
+  friends:[User!]
+  videosPosted:
+}
+
+
+type video{
+  id:Id!
+  title:String!
+  description:String!
+  }
