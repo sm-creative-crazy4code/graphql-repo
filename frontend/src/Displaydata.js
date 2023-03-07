@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useQuery,gql,useLazyQuery } from '@apollo/client'
+import { useQuery,gql,useLazyQuery, useMutation } from '@apollo/client'
 
 
 
@@ -33,6 +33,23 @@ query  Movie($name: String) {
     isInTheaters
     }
 }`
+ 
+
+
+const CREATE_USER_MUTATION = gql`
+mutation  CreateUser($input:CreateUserInput!){
+  createUser(input: $input){
+    name
+    id
+  }
+
+
+}
+
+`
+
+
+
 
 
 
@@ -42,7 +59,7 @@ const[fetchMovieByName,{data:uniqueMovie,error:Uniqueerror}]=useLazyQuery(QUERY_
 
 const [movieSearched,setMovieSearched]= useState("")
 
-const {data,loading,error} =useQuery(QUERY_ALL_USER)
+const {data,loading,refetch} =useQuery(QUERY_ALL_USER)
 
 
 const {data:moviedata}=useQuery(QUERY_MOVIE)
@@ -56,8 +73,50 @@ const {data:moviedata}=useQuery(QUERY_MOVIE)
 // }
 
 
+const[name,setName]=useState("")
+const[username,setUsername]=useState("")
+const[age,setAge]=useState(0)
+const[nationality,setNationality]=useState("")
+
+
+
+const [createUser]= useMutation(CREATE_USER_MUTATION)
+
+
+
   return (
     <div>
+{/* DIV FOR USEMUTATION HOOK */}
+
+
+<div>
+
+<input type="text"  placeholder='name' onChange={(event)=>{setName(event.target.value)}} />
+<input type="text"  placeholder='Username'  onChange={(event)=>{setUsername(event.target.value)}} />
+<input type="number"  placeholder='Age' onChange={(event)=>{setAge(event.target.value)}}  />
+<input type="text"  placeholder='Nationality' onChange={(event)=>{setNationality(event.target.value.toUpperCase())}}     />
+
+<div>
+<button onClick={()=>{
+  createUser({
+    variables:{
+      input :{ name,username,age:Number(age),nationality
+
+      }
+    }
+  })
+  refetch()
+}}>
+  Create new User
+</button>
+
+</div> 
+
+</div>
+
+
+
+
         
 {loading && (<h1>Loading</h1>)}
 
@@ -82,10 +141,13 @@ const {data:moviedata}=useQuery(QUERY_MOVIE)
 
 
        <div>{
+
+        
        uniqueMovie &&(
              <div>
-                <h5>{uniqueMovie.movie.name}</h5>
-                <h5>{uniqueMovie.movie.yearOfPublication   }</h5>
+                <h5>{uniqueMovie.getMovie.name}</h5>
+               
+
              </div>
 
 
@@ -93,6 +155,9 @@ const {data:moviedata}=useQuery(QUERY_MOVIE)
         
         
         }</div>
+
+
+{Uniqueerror && <h1>{Uniqueerror}</h1>}
 
      </div>
 
