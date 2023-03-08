@@ -67,6 +67,18 @@ enum Nationality{
     GERMANY
 }
 
+type UserSuccessResult{
+    users:[User!]!
+}
+
+
+
+type UserErrorResult{
+    message:String!
+}
+
+union UserResult= UserSuccessResult | UserErrorResult
+
 `;
 
 

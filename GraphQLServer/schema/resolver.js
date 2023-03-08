@@ -3,10 +3,14 @@ const _ = require("lodash");
 
 
 const resolvers={
-Query:{
+Query:{ 
 
-users(){
-    return UserList
+users(parent,args,context,info){
+     console.log(info)
+
+  if (UserList)  return { users : UserList};
+
+  return{message:" Errror unable to fetch the userlists" }
 },
 
 getUser:(parent,args)=>{
@@ -16,8 +20,8 @@ getUser:(parent,args)=>{
 
 },
 
-movies:()=>{
-
+movies:(parent)=>{
+console.log(parent)
 return MovieList
 },
 
@@ -71,9 +75,23 @@ deleteUser:(parent,args)=>{
     return null
 }
 
+},
+
+
+UserResult:{
+    __resolvedType(obj){
+        if(obj.users){
+            return "UserSuccessResult"
+        }
+
+        if(obj.message){
+            return "UserErrorResult";
+        }
+
+        return null
+    }
+
 }
-
-
 
 }
 
